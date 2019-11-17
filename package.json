@@ -1,0 +1,35 @@
+{
+  "name": "interviewprep",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "lint": "eslint ./src/*",
+    "test": "jest",
+    "ci": "npm run lint && npm run test -- --coverage"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/prabhuvashwin/InterviewPrep.git"
+  },
+  "author": "Ashwin Venkatesh Prabhu",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/prabhuvashwin/InterviewPrep/issues"
+  },
+  "homepage": "https://github.com/prabhuvashwin/InterviewPrep#readme",
+  "devDependencies": {
+    "@babel/cli": "^7.4.4",
+    "@babel/preset-env": "^7.4.5",
+    "@babel/plugin-proposal-class-properties": "^7.0.0",
+    "@types/jest": "^24.0.15",
+    "eslint": "^6.0.1",
+    "eslint-config-airbnb": "^17.1.0",
+    "eslint-plugin-import": "^2.18.0",
+    "eslint-plugin-jest": "^22.7.1",
+    "eslint-plugin-jsx-a11y": "^6.2.1",
+    "eslint-plugin-react": "^7.14.2",
+    "husky": "^2.5.0",
+    "jest": "^24.8.0"
+  }
+}
