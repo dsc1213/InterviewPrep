@@ -135,6 +135,25 @@ describe( 'Binary Search Tree', () => {
     expect( result[4] ).toStrictEqual( 6 );
   } );
 
+  it( 'BST InOrderTrav iterative', () => {
+    const bst = new BinarySearchTree();
+
+    bst.Insert( 3 );
+    bst.Insert( 5 );
+    bst.Insert( 4 );
+    bst.Insert( 6 );
+    bst.Insert( 2 );
+
+    const result = bst.InOrderTravIterative( bst.root );
+
+    expect( result.length ).toStrictEqual( 5 );
+    expect( result[0] ).toStrictEqual( 2 );
+    expect( result[1] ).toStrictEqual( 3 );
+    expect( result[2] ).toStrictEqual( 4 );
+    expect( result[3] ).toStrictEqual( 5 );
+    expect( result[4] ).toStrictEqual( 6 );
+  } );
+
   it( 'BST PreOrderTrav', () => {
     const bst = new BinarySearchTree();
 

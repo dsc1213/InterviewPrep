@@ -115,6 +115,27 @@ class BinarySearchTree {
     return result;
   }
 
+  InOrderTravIterative = ( root ) => {
+    const result = [];
+    const callStack = [];
+    let currentNode = root;
+
+    while ( true ) {
+      while ( !!currentNode ) {
+        callStack.push( currentNode );
+        currentNode = currentNode.left;
+      }
+
+      if ( callStack.length <= 0 ) break;
+
+      const prevCurrent = callStack.pop();
+      result.push( prevCurrent.value );
+      currentNode = ( prevCurrent || {} ).right || null;
+    }
+
+    return result;
+  }
+
   PreOrderTrav = ( currentNode, result = [] ) => {
     if ( !isNullOrUndefined( currentNode ) ) {
       result.push( currentNode.value );
