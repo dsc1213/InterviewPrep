@@ -48,7 +48,7 @@ describe( 'Linked List', () => {
     ll.prepend( 2 );
     ll.add( 3 );
 
-    expect( ll.search( 3 ) ).toBeTruthy();
+    expect( ll.search( 3 ).value ).toStrictEqual( 3 );
   } );
 
   it( 'Search in a linked list, value not present', () => {
@@ -58,13 +58,13 @@ describe( 'Linked List', () => {
     ll.prepend( 2 );
     ll.add( 3 );
 
-    expect( ll.search( 4 ) ).toBeFalsy();
+    expect( ll.search( 4 ) ).toBeNull();
   } );
 
   it( 'Delete from an empty linked list', () => {
     const ll = new LinkedList();
 
-    expect( ll.delete( 1 ) ).toBeFalsy();
+    expect( ll.delete( 1 ) ).toStrictEqual( 0 );
   } );
 
   it( 'Delete a non-existent entry from a linked list', () => {
@@ -73,7 +73,7 @@ describe( 'Linked List', () => {
     ll.add( 1 );
     ll.add( 2 );
 
-    expect( ll.delete( 3 ) ).toBeFalsy();
+    expect( ll.delete( 3 ) ).toStrictEqual( 0 );
   } );
 
   it( 'Delete from a linked list with only one element', () => {
@@ -81,7 +81,7 @@ describe( 'Linked List', () => {
 
     ll.add( 1 );
 
-    expect( ll.delete( 1 ) ).toBeTruthy();
+    expect( ll.delete( 1 ) ).toStrictEqual( 1 );
     expect( ll.head ).toBeNull();
     expect( ll.tail ).toBeNull();
   } );
@@ -91,22 +91,116 @@ describe( 'Linked List', () => {
 
     ll.add( 1 );
     ll.add( 2 );
+    ll.add( 2 );
     ll.add( 3 );
+    ll.add( 2 );
 
 
-    expect( ll.delete( 2 ) ).toBeTruthy();
+    expect( ll.delete( 2 ) ).toStrictEqual( 3 );
     expect( ll.head.value ).toStrictEqual( 1 );
     expect( ll.head.next.value ).toStrictEqual( 3 );
+  } );
 
-    const ll1 = new LinkedList();
+  it( 'Delete tail from a linked list', () => {
+    const ll = new LinkedList();
 
-    ll1.add( 1 );
-    ll1.add( 2 );
-    ll1.add( 3 );
+    ll.add( 1 );
+    ll.add( 2 );
+    ll.add( 3 );
 
-    expect( ll1.delete( 3 ) ).toBeTruthy();
-    expect( ll1.head.value ).toStrictEqual( 1 );
-    expect( ll1.head.next.value ).toStrictEqual( 2 );
+    expect( ll.deleteTail().value ).toStrictEqual( 3 );
+    expect( ll.head.value ).toStrictEqual( 1 );
+    expect( ll.tail.value ).toStrictEqual( 2 );
+  } );
+
+  it( 'Delete tail from a linked list, only one node', () => {
+    const ll = new LinkedList();
+
+    ll.add( 1 );
+
+    expect( ll.deleteTail().value ).toStrictEqual( 1 );
+    expect( ll.head ).toBeNull();
+    expect( ll.tail ).toBeNull();
+  } );
+
+  it( 'Delete head from a linked list', () => {
+    const ll = new LinkedList();
+
+    ll.add( 1 );
+    ll.add( 2 );
+    ll.add( 3 );
+
+    expect( ll.deleteHead().value ).toStrictEqual( 1 );
+    expect( ll.head.value ).toStrictEqual( 2 );
+    expect( ll.tail.value ).toStrictEqual( 3 );
+  } );
+
+  it( 'Delete head from an empty linked list', () => {
+    const ll = new LinkedList();
+
+    expect( ll.deleteHead() ).toBeNull();
+  } );
+
+  it( 'Delete head from a linked list, only one node', () => {
+    const ll = new LinkedList();
+
+    ll.add( 1 );
+
+    expect( ll.deleteHead().value ).toStrictEqual( 1 );
+    expect( ll.head ).toBeNull();
+    expect( ll.tail ).toBeNull();
+  } );
+
+  it( 'fromArray', () => {
+    const ll = new LinkedList();
+
+    const arr = [1, 2, 3];
+
+    ll.fromArray( arr );
+
+    expect( ll.head.value ).toStrictEqual( 1 );
+    expect( ll.head.next.value ).toStrictEqual( 2 );
+    expect( ll.head.next.next.value ).toStrictEqual( 3 );
+  } );
+
+  it( 'toArray', () => {
+    const ll = new LinkedList();
+
+    ll.add( 1 );
+    ll.add( 2 );
+    ll.add( 3 );
+
+    const result = ll.toArray();
+
+    expect( result.length ).toStrictEqual( 3 );
+    expect( result[0] ).toStrictEqual( 1 );
+    expect( result[1] ).toStrictEqual( 2 );
+    expect( result[2] ).toStrictEqual( 3 );
+  } );
+
+  it( 'toString', () => {
+    const ll = new LinkedList();
+
+    ll.add( 1 );
+    ll.add( 2 );
+    ll.add( 3 );
+
+    expect( ll.toString() ).toStrictEqual( '1,2,3' );
+  } );
+
+  it( 'reverse', () => {
+    const ll = new LinkedList();
+
+    ll.add( 1 );
+    ll.add( 2 );
+    ll.add( 3 );
+
+    ll.reverse()
+
+    expect( ll.head.value ).toStrictEqual( 3 );
+    expect( ll.head.next.value ).toStrictEqual( 2 );
+    expect( ll.head.next.next.value ).toStrictEqual( 1 );
+    expect( ll.tail.value ).toStrictEqual( 1 );
   } );
 
   it( 'Traversal', () => {

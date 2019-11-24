@@ -1,16 +1,19 @@
 import { isNullOrUndefined } from '../../helpers/type-of';
+import Comparer from '../../helpers/comparer';
 
 class Node {
-  constructor( value ) {
+  constructor( value, next = null ) {
     this.value = value;
-    this.next = null;
+    this.next = next;
   }
 }
 
 class LinkedList {
-  constructor() {
+  constructor( compareFn ) {
     this.head = null;
     this.tail = null;
+
+    this.compare = new Comparer( compareFn );
   }
 
   add = value => {
@@ -49,59 +52,127 @@ class LinkedList {
 
   search = value => {
     const { head } = this;
-    let node = head;
+    let currNode = head;
 
-    while ( !isNullOrUndefined( node ) && node.value !== value ) {
-      node = node.next;
+    while ( !isNullOrUndefined( currNode ) ) {
+
+      if ( this.compare.equal( currNode.value, value ) ) {
+        return currNode;
+      }
+
+      currNode = currNode.next;
     }
 
-    if ( isNullOrUndefined( node ) ) {
-      return false;
-    }
-
-    return true;
+    return null;
   }
 
   delete = value => {
+    let numNodesDeleted = 0;
+    if ( isNullOrUndefined( this.head ) ) return numNodesDeleted;
+
+    while ( !isNullOrUndefined( this.head ) && this.compare.equal( this.head.value, value ) ) {
+      numNodesDeleted++;
+      this.head = this.head.next;
+    }
+
+    let currNode = this.head; // At this point, we know that h.value !== value
+
+    if ( !isNullOrUndefined( currNode ) ) {
+      while ( !isNullOrUndefined( currNode.next ) ) {
+        if ( this.compare.equal( currNode.next.value, value ) ) {
+          numNodesDeleted++;
+          currNode.next = currNode.next.next;
+        } else {
+          currNode = currNode.next;
+        }
+      }
+    }
+
+    if ( this.compare.equal( this.tail.value, value ) ) {
+      // the tail node was already deleted in the above while loop. We need to just reassign the tail here
+      if ( isNullOrUndefined( this.head ) || isNullOrUndefined( this.head.next ) ) {
+        this.tail = this.head;
+      } else {
+        this.tail = currNode;
+      }
+    }
+
+    return numNodesDeleted;
+  }
+
+  deleteTail = () => {
+    const deletedTail = this.tail;
+
+    if ( isNullOrUndefined( this.head ) || ( this.head === this.tail ) ) {
+      this.head = null;
+      this.tail = null;
+
+      return deletedTail;
+    }
+
+    let currNode = this.head;
+
+    while ( currNode.next !== deletedTail ) {
+      currNode = currNode.next;
+    }
+
+    currNode.next = null;
+    this.tail = currNode;
+
+    return deletedTail;
+  }
+
+  deleteHead = () => {
+    if ( isNullOrUndefined( this.head ) ) return null;
+
     let h = this.head;
     let t = this.tail;
-    if ( isNullOrUndefined( h ) ) return false;
+    const deletedHead = h;
 
-    let node = h;
-
-    if ( node.value === value ) {
-      if ( h === t ) {
-        t = null;
-      }
-
-      h = h.next;
-
-      this.head = h;
-      this.tail = t;
-
-      return true;
-    }
-
-    while ( node.next !== null && node.next.value !== value ) {
-      node = node.next;
-    }
-
-    if ( node.next !== null ) {
-      if ( node.next === t ) {
-        t = node;
-      }
-      node.next = node.next.next;
-
-      this.head = h;
-      this.tail = t;
-
-      return true;
+    if ( !isNullOrUndefined( h.next ) ) {
+      h = h.next
+    } else {
+      h = null;
+      t = null;
     }
 
     this.head = h;
     this.tail = t;
 
-    return false;
+    return deletedHead;
+  }
+
+  fromArray = values => values.forEach( v => this.add( v ) );
+
+  toArray = () => {
+    const nodes = [];
+
+    let currNode = this.head;
+
+    while ( !isNullOrUndefined( currNode ) ) {
+      nodes.push( currNode.value );
+      currNode = currNode.next;
+    }
+
+    return nodes;
+  }
+
+  toString = cb => this.toArray().map( n => n.toString( cb ) ).toString();
+
+  reverse = () => {
+    let currNode = this.head;
+    let prevNode = null;
+    let nextNode = null;
+
+    while ( currNode ) {
+      nextNode = currNode.next;
+      currNode.next = prevNode; // This is where the reversing happens
+      prevNode = currNode;
+      currNode = nextNode;
+    }
+
+    this.tail = this.head;
+    this.head = prevNode;
   }
 
   traverse = () => {
