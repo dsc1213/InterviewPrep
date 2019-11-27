@@ -13,7 +13,7 @@ console.log( a );
 a = "Hello World!";
 ```
 
-Although this is what appears to be happening (because the code is working fine), this isn't actually happening, your code isn't going anywhere. The Javascript enginer is not physically moving your code, and your code stays where you typed it.
+Although this is what appears to be happening (because the code is working fine), this isn't actually happening, your code isn't going anywhere. The Javascript engineer is not physically moving your code, and your code stays where you typed it.
 
 ## So what is hoisting then?
 
@@ -23,7 +23,7 @@ During the compile phase, just microseconds before your code is executed, it is 
 
 A *lexical environment* is a data structure that holds **identifier-variable mapping**. (here **identifier** refers to the name of the variables/functions, and **the variable** is the reference to actual object [including function object] or primitive value).
 
-The is what a lexical environment conceptually look like:
+This is what a lexical environment conceptually look like:
 ```
 LexicalEnvironment = {
   Identifier: <value>,
@@ -123,7 +123,7 @@ console.log( a ); // outputs undefined
 a = 5;
 ```
 
-Here during the compile phase, the Javascript engine encounters the variable `a` and stores it in the lexical environment, but because it's a `;et` variable, the engine does not initialize it with any value. So during the compile phase, the lexical environment will look like this:
+Here during the compile phase, the Javascript engine encounters the variable `a` and stores it in the lexical environment, but because it's a `let` variable, the engine does not initialize it with any value. So during the compile phase, the lexical environment will look like this:
 ```
 lexicalEnvironment = {
   a: <uninitialized>,
@@ -132,7 +132,7 @@ lexicalEnvironment = {
 
 Now if we try to access the variable before it is declated, the Javascript engine will try to fetch the value of the variable from the lexical environment, because the variable is uninitialized, it will throw a reference error.
 
-During the execution, when the engine reaches the line where the variable was declared, it will try to evaliate its binding (value), because the variable has no value associated with it, it will assign it `undefined`. So the lexical environment will look like this after execution of the first line:
+During the execution, when the engine reaches the line where the variable was declared, it will try to evaluate its binding (value), because the variable has no value associated with it, it will assign it `undefined`. So the lexical environment will look like this after execution of the first line:
 ```
 lexicalEnvironment = {
   a: undefined,
