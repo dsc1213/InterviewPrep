@@ -10,7 +10,7 @@ Before we dive into closures, let's first understand the lexical scope.
 
 ### What is a Lexical Scope?
 
-A lexical scope or static scope in Javascript refers to the accessibility of the variables, functions, and objects beased on their physical location in the source code. For example:
+A lexical scope or static scope in Javascript refers to the accessibility of the variables, functions, and objects based on their physical location in the source code. For example:
 ```
 let a = "global";
 
@@ -90,6 +90,109 @@ That's because at each call of `count()`, a new scope for the function is create
 
 Up until now, we have discussed what closures are and their practical examples. Now, let's understand how closures really work is Javascript.
 
-To really understand how closures work in Javascript, we have to understand the two important concepts in Javascript - 1) Execution Context, 2) Lexical Environment
+To really understand how closures work in Javascript, we have to understand the two important concepts in Javascript - 1) Execution Context, 2) Lexical Environment.
 
-1. **Execution Context**
+Refer to ExecutionContext readme for more details on these two concepts.
+
+**Note -** When a function completes, its execution context is removed from the stack, but its lexical environment is referenced by any other lexical environments in their outer lexical environment property.
+
+## Detailed Closures Examples
+
+Now that we understand execution context and lexical environment, let's get back to the closures.
+
+### Example 1
+
+Take a look at this code snippet:
+```
+function person() {
+  let name = "Peter";
+
+  return function displayName() {
+    console.log( name );
+  };
+}
+
+let peter = person();
+peter(); // Prints "Peter"
+```
+
+When the `person` function is executed, the Javascript engine creates a new execution context and lexical environment for the function. After this function finishes, it returns `displayName` function and assigns it to `peter` variable. SO its lexical environment will look like this:
+```
+personLexicalEnvironment = {
+  environmentRecord: {
+    name: "Peter",
+    displayName: <displayName function reference>
+  },
+  outer: <globalLexicalEnvironment>,
+}
+```
+
+When the `person` function finishes, its execution context is removed from the stack. But its lexical environment is still inmemory because its lexical environment is referenced by the lexical environment of its inner `displayName` function. So its variables are still available in the memory.
+
+When the `peter` function is executed (which is actually a reference to the `displayName` function), the Javascript engine creates a new execution context and lexical environment for that function.
+
+So its lexical environment looks like this:
+```
+displayNameLexicalEnvironment = {
+  environmentRecord: {
+
+  },
+  outer: <personLexicalEnvironment>,
+}
+```
+
+As there's no variable in `displayName` function, its environment record will be empty. During the execution of this function, the Javascript engine will try to find the variable `name` in the function's lexical environment.
+
+As there are no variables in the lexical environment of `displayName` function, it will look into the outer lexical environment, that is, the lexical environment of the `person` function which still there in the memory. The Javascript engine finds the variable and `name` is printed to the console.
+
+### Example 2
+```
+function getCounter() {
+  let counter = 0;
+  return function() {
+    return counter++;
+  }
+}
+
+let count = getCounter();
+
+console.log( count() ); // 0
+console.log( count() ); // 1
+console.log( count() ); // 2
+```
+
+Again the lexical environment for the `getCounter` function will look like this:
+```
+getCounterLexicalEnvironment = {
+  environmentRecord: {
+    counter: 0,
+    <anonymous func>: <ref. to func>,
+  },
+  outer: <globalLexicalEnvironment>,
+}
+```
+
+This function returns an anonymous function and assigns it to `count` variable. When the `count` function is executed, its lexical environment will look like this:
+```
+countLexicalEnvironment = {
+  environmentRecord: {
+
+  },
+  outer: <getCountLexicalEnvironment>,
+}
+```
+
+When the `count` function is called, the Javascript engine will look into the lexical environment of this function for the `count` variable. Again as its environment record is empty, the engine will look into the outer lexical environment of the function.
+
+The engine finds the variable, prints it to the console and will increment the counter variable in the `getCounter` function lexical environment. So the lexical environment for the `getCounter` function after first call `count` function will look like this:
+```
+getCounterLexicalEnvironment = {
+  environmentRecord: {
+    counter: 1,
+    <anonymous func>: <ref. to func>,
+  },
+  outer: <globalLexicalEnvironment>,
+}
+```
+
+On each call to the `count` function, the Javascript engine creates a new lexical environment for the `count` function, increments the `counter` variable and updates the lexical environment of `getCounter` function to reflect changes.
